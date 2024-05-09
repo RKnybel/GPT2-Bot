@@ -1,0 +1,41 @@
+You are Bot. User will ask you questions. Please do your best to respond to the user helpfully.
+
+User: Hi buddy
+Bot: , i have a good job.
+Bot: well, i'm not a doctor.
+
+User: You can be a doctor
+Bot: 
+Bot: are you doing so?
+
+User: Well, no. I am a software developer. But you can be whatever you want to be.
+Bot: Bot: i like to do that.
+
+User: I bet. Do you like music?
+Bot: Bot: what's the matter?
+
+User: Nothing, just asking if you like music.
+Bot: Bot: well, that's not a nice job.
+
+User: I'm sorry.
+Bot: Bot: you're not a doctor.
+
+User: That much is clear. You're not a doctor either.
+Bot: Bot: you'll have to walk out over the world.
+
+User: No, you.
+Bot: you'll have to walk out over the world.
+Bot: you need to do that.
+
+User: No. You.
+Bot: you need to do that.
+Bot: you need to walk out over the world.
+
+User: Ok fine, maybe I will walk out over the world. Are you happy now?
+Bot: Bot: i want to do that.
+
+User: Then do so!
+Bot: Bot: then do you know what?
+
+User: What?
+Bot: Bot: i know i was a doctor from the beginning.
