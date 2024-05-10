@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Demo</title>
+    <style>
+        .chat-div {
+            float: left;
+            width: 50%;
+            box-sizing: border-box; /* Include padding and border in width calculation */
+            padding: 10px; /* Optional: Add padding for spacing */
+            border: 1px solid #ccc; /* Optional: Add border for visibility */
+        }
+        .settings-div {
+            float: left;
+            width: 50%;
+            box-sizing: border-box; /* Include padding and border in width calculation */
+            padding: 10px; /* Optional: Add padding for spacing */
+            border: 1px solid #ccc; /* Optional: Add border for visibility */
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .slider-label {
+            width: 150px;
+        }
+
+        .slider-value {
+            margin-left: 10px;
+            width: 50px;
+        }
+
+        .slider-textbox {
+            margin-left: 10px;
+            width: 50px;
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+.checkbox-label {
+    margin-right: 10px;
+}
+    </style>
+</head>
+<body>
+    <h1>Project Exie</h1>
+    <hr/>
+    <div id="chat-window" class="chat-div">
+        <h2>Chat Window</h2>
+        <div id="chat-container">
+            <!-- Replaced Jinja here with Javascript -->
+            <!--{% for msg in conversation %}
+                {% if msg.user %}
+                    <div class="user-msg"><span style="color:red;">User: </span>{{ msg.user }}</div>
+                {% elif msg.bot %}
+                    <div class="bot-msg"><span style="color:blue;">Bot: </span>{{ msg.bot }}</div>
+                {% endif %}
+            {% endfor %}-->
+        </div>
+            <input type="text" name="user_message" id="user_message" placeholder="Type your message here" autocomplete="off">
+            <button onclick="sendMessage()">Send</button>
+    </div>
+    
+    <script>
+    function addMessageToChat(message, isUser) {
+        const chatContainer = document.getElementById('chat-container');
+
+        // Create a new message element
+        const messageElement = document.createElement('div');
+        if (isUser) {
+            messageElement.classList.add('user-msg');
+            messageElement.innerHTML = `<span style="color:red;">User: </span>${message}`;
+        } else {
+            messageElement.classList.add('bot-msg');
+            messageElement.innerHTML = `<span style="color:blue;">Bot: </span>${message}`;
+        }
+
+        // Append the message element to the chat container
+        chatContainer.appendChild(messageElement);
+
+        // Scroll to the bottom of the chat container to show the latest message
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    function sendMessage() {
+        const userInput = document.getElementById('user_message').value;
+        if (userInput.trim() !== '') {
+            addMessageToChat(userInput, true); // Add user message to chat window
+            document.getElementById('user_message').value = ''; // Clear input field
+
+            // Send user input to Flask using AJAX (you can use fetch or other methods)
+            fetch('/process_message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 'user_message': userInput })  // Corrected key: 'user_message'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    addMessageToChat(data.bot_response, false); // Add bot response to chat window
+                })
+                .catch(error => {
+                    console.error('Error processing message:', error);
+            });
+
+        }
+    }
+    </script>
+    
+    <div id="llm-settings" class="settings-div">
+        <h2>Language Model Settings</h2>
+
+        <h4>Hyperparameters</h4>
+        <p>Todo: add max input tokens length. Current slider is max output.</p>
+        </p>
+        <div class="slider-container">
+            <label for="max_tokens" class="slider-label">Max Gen. Tokens:</label>
+            <input type="range" id="max_tokens" min="1" max="2000" step="1" value="200" class="slider">
+            <input type="text" id="max_tokens-textbox" class="slider-textbox" value="200">
+        </div>
+
+        <div class="slider-container">
+            <label for="temperature" class="slider-label">Temperature:</label>
+            <input type="range" id="temperature" min="0.0" max="5.0" step="0.05" value="0.75" class="slider">
+            <input type="text" id="temperature-textbox" class="slider-textbox" value="0.75">
+        </div>
+
+        <div class="slider-container">
+            <label for="top_k" class="slider-label">Top K:</label>
+            <input type="range" id="top_k" min="0" max="100" step="1" value="30" class="slider">
+            <input type="text" id="top_k-textbox" class="slider-textbox" value="30">
+        </div>
+
+        <div class="slider-container">
+            <label for="top_p" class="slider-label">Top P:</label>
+            <input type="range" id="top_p" min="0" max="1.0" step="0.05" value="1.0" class="slider">
+            <input type="text" id="top_p-textbox" class="slider-textbox" value="1.0">
+        </div>
+
+        <div class="slider-container">
+            <label for="num_beams" class="slider-label">Num. Beams:</label>
+            <input type="range" id="num_beams" min="1" max="10" step="1" value="1" class="slider">
+            <input type="text" id="num_beams-textbox" class="slider-textbox" value="1">
+        </div>
+
+        <div class="slider-container">
+            <label for="length_penalty" class="slider-label">Length Penalty:</label>
+            <input type="range" id="length_penalty" min="0.0" max="2.0" step="0.05" value="0.0" class="slider">
+            <input type="text" id="length_penalty-textbox" class="slider-textbox" value="0.0">
+        </div>
+
+        <div class="slider-container">
+            <label for="no_repeat_ngram_size" class="slider-label">No Repeat Ngram Size:</label>
+            <input type="range" id="no_repeat_ngram_size" min="0" max="5" step="1" value="0" class="slider">
+            <input type="text" id="no_repeat_ngram_size-textbox" class="slider-textbox" value="0">
+        </div>
+
+        <div class="checkbox-container">
+            <label for="early_stopping_checkbox" class="checkbox-label">Early Stopping:</label>
+            <input type="checkbox" id="early_stopping_checkbox">
+        </div>
+
+        <div class="slider-container">
+            <label for="num_return_seqs" class="slider-label">Num. Return Sequences:</label>
+            <input type="range" id="num_return_seqs" min="0" max="5" step="1" value="1" class="slider">
+            <input type="text" id="num_return_seqs-textbox" class="slider-textbox" value="1">
+        </div>
+        
+        
+
+        <button onclick="updateSettings()">Apply Settings</button>
+    </div>
+
+        <!-- Add input elements for other hyperparameters as needed -->
+
+        
+
+        <script>
+            function updateSettings() {
+                var max_tokens = parseInt(document.getElementById('max_tokens').value);
+                var temperature = parseFloat(document.getElementById('temperature').value);
+                var top_k = parseFloat(document.getElementById('top_k').value);
+                var top_p = parseFloat(document.getElementById('top_p').value);
+                var num_beams = parseInt(document.getElementById('num_beams').value);
+                var length_penalty = parseFloat(document.getElementById('length_penalty').value);
+                var no_repeat_ngram_size = parseInt(document.getElementById('no_repeat_ngram_size').value);
+                var early_stopping = document.getElementById('early_stopping_checkbox').checked;
+                var num_return_seqs = parseInt(document.getElementById('num_return_seqs').value);
+
+                // Call backend to update hyperparameters
+                fetch('/update_settings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        max_tokens: max_tokens,
+                        temperature: temperature,
+                        top_k: top_k,
+                        top_p: top_p,
+                        num_beams: num_beams,
+                        length_penalty: length_penalty,
+                        no_repeat_ngram_size: no_repeat_ngram_size,
+                        early_stopping: early_stopping,
+                        num_return_seqs: num_return_seqs
+                    })
+                }).then(response => {
+                    if (response.ok) {
+                        alert('Settings updated successfully!');
+                    } else {
+                        alert('Failed to update settings.');
+                    }
+                }).catch(error => {
+                    console.error('Error updating settings:', error);
+                });
+            }
+
+
+            const sliders = document.querySelectorAll('.slider');
+            const textboxes = document.querySelectorAll('.slider-textbox');
+
+            sliders.forEach((slider, index) => {
+                slider.addEventListener('input', () => {
+                    textboxes[index].value = slider.value;
+                });
+            });
+
+            textboxes.forEach((textbox, index) => {
+                textbox.addEventListener('input', () => {
+                    sliders[index].value = textbox.value;
+                });
+            });
+        </script>
+    </div>
+</body>
+</html>
